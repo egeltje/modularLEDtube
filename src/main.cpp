@@ -2,10 +2,14 @@
 #include <FastLED.h>
 #include "main.h"
 
+
 void setup() {
   delay(3000); // sanity delay
   FastLED.addLeds<CHIPSET, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness( BRIGHTNESS );
+
+  pinMode(13, OUTPUT);      // TEST: turn LED on to show active program
+  digitalWrite(13, HIGH);   // TEST: turn LED on to show active program
 }
 
 void loop()
