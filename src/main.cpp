@@ -3,8 +3,16 @@
 #include "main.h"
 
 void setup() {
-  // configure builtin LED
+  // configure IO pins
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(BUTTON_PIN0, INPUT);
+  pinMode(BUTTON_PIN1, INPUT);
+  pinMode(BUTTON_PIN2, INPUT);
+  pinMode(BUTTON_PIN3, INPUT);
+  pinMode(BUTTON_PIN4, INPUT);
+  pinMode(BUTTON_PIN5, INPUT);
+  pinMode(BUTTON_PIN6, INPUT);
+  
   // turn on builtin LED on to show running config
   digitalWrite(LED_BUILTIN, HIGH);
 
