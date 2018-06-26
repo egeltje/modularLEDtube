@@ -2,12 +2,15 @@
 #include <FastLED.h>
 #include "main.h"
 
-
 void setup() {
-  pinMode(13, OUTPUT);      // TEST: turn LED on to show active program
-  digitalWrite(13, HIGH);   // TEST: turn LED on to show active program
+  // configure builtin LED
+  pinMode(LED_BUILTIN, OUTPUT);
+  // turn on builtin LED on to show running config
+  digitalWrite(LED_BUILTIN, HIGH);
 
   delay(1000); // sanity delay
+
+  // configure lED strips in FastLED array
   FastLED.addLeds<CHIPSET, LED_PIN0, COLOR_ORDER>(leds[0], NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.addLeds<CHIPSET, LED_PIN1, COLOR_ORDER>(leds[1], NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.addLeds<CHIPSET, LED_PIN2, COLOR_ORDER>(leds[2], NUM_LEDS).setCorrection( TypicalLEDStrip );
@@ -18,46 +21,66 @@ void setup() {
   FastLED.addLeds<CHIPSET, LED_PIN7, COLOR_ORDER>(leds[7], NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness( BRIGHTNESS );
 
-  digitalWrite(13, LOW);   // TEST: turn LED on to show active program
+  // configure switches and potentiometers
+  // TODO
+
+  // turn off builtin LED on to show running program
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void loop()
 {
+  int state = 0;
   // Add entropy to random number generator; we use a lot of it.
   random16_add_entropy( random());
 
-  Fire2012(); // run simulation frame
+  switch (state) {  // run simulation frame depending on state
+    case 0:
+      Fire();
+      break;
+    default:
+      Light();
+  }
 
   FastLED.show(); // display this frame
   FastLED.delay(1000 / FRAMES_PER_SECOND / NUM_STRIPS);
 }
 
-void Fire2012()
-{
+void Light() {
+  int _i, _j;
+
+  for (_i = 0; _i < NUM_STRIPS; _i++) {
+    for( int _j = 0; _j < NUM_LEDS; _j++) {
+      leds[_i][_j] = 0x7F7F7F;
+    }
+  }
+}
+
+void Fire() {
   // Fire2012 by Mark Kriegsman, July 2012
   // as part of "Five Elements" shown here: http://youtu.be/knWiGsmgycY
 
-  static byte heat[NUM_STRIPS][NUM_LEDS];
-  int i, j;
+  static byte _heat[NUM_STRIPS][NUM_LEDS];
+  int _i, _j;
 
-  for (i = 0; i < NUM_STRIPS; i++) {
+  for (_i = 0; _i < NUM_STRIPS; _i++) {
     // Step 1.  Cool down every cell a little
-    for(j = 0; j < NUM_LEDS; j++) {
-      heat[i][j] = qsub8( heat[i][j],  random8(0, ((COOLING * 10) / NUM_LEDS) + 2));
+    for(_j = 0; _j < NUM_LEDS; _j++) {
+      _heat[_i][_j] = qsub8(_heat[_i][_j],  random8(0, ((COOLING * 10) / NUM_LEDS) + 2));
     }
     // Step 2.  Heat from each cell drifts 'up' and diffuses a little
-    for(j= NUM_LEDS - 1; j >= 2; j--) {
-      heat[i][j] = (heat[i][j - 1] + heat[i][j - 2] + heat[i][j - 2] ) / 3;
+    for(_j= NUM_LEDS - 1; _j >= 2; _j--) {
+      _heat[_i][_j] = (_heat[_i][_j - 1] + _heat[_i][_j - 2] + _heat[_i][_j - 2] ) / 3;
     }
     // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-    if( random8() < SPARKING ) {
-      j = random8(7);
-      heat[i][j] = qadd8( heat[i][j], random8(160,255) );
+    if(random8() < SPARKING) {
+      _j = random8(7);
+      _heat[_i][_j] = qadd8(_heat[_i][_j], random8(160,255));
     }
     // Step 4.  Map from heat cells to LED colors
-    for( int j = 0; j < NUM_LEDS; j++) {
-      CRGB color = HeatColor(heat[i][j]);
-      leds[i][j] = color;
+    for(_j = 0; _j < NUM_LEDS; _j++) {
+      CRGB _color = HeatColor(_heat[_i][_j]);
+      leds[_i][_j] = _color;
     }
   }
 }

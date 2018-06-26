@@ -20,4 +20,5 @@
 
 CRGB leds[NUM_STRIPS][NUM_LEDS];
 
-void Fire2012();
+void Light();
+void Fire();
