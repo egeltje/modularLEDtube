@@ -12,11 +12,11 @@ void setup() {
   pinMode(BUTTON_PIN4, INPUT);
   pinMode(BUTTON_PIN5, INPUT);
   pinMode(BUTTON_PIN6, INPUT);
-  
+
   // turn on builtin LED on to show running config
   digitalWrite(LED_BUILTIN, HIGH);
 
-  delay(1000); // sanity delay
+  delay(100); // sanity delay
 
   // configure lED strips in FastLED array
   FastLED.addLeds<CHIPSET, LED_PIN0, COLOR_ORDER>(leds[0], NUM_LEDS).setCorrection( TypicalLEDStrip );
@@ -59,7 +59,7 @@ void Light() {
 
   for (_i = 0; _i < NUM_STRIPS; _i++) {
     for( int _j = 0; _j < NUM_LEDS; _j++) {
-      leds[_i][_j] = 0x7F7F7F;
+      leds[_i][_j] = 0xFF7F00;
     }
   }
 }

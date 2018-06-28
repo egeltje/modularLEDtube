@@ -20,7 +20,7 @@
 #define NUM_LEDS          60
 #define NUM_STRIPS        8
 
-#define BRIGHTNESS        127
+#define BRIGHTNESS        191
 #define FRAMES_PER_SECOND 60
 
 // For Fire2012
