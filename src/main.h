@@ -1,33 +1,35 @@
-#define LED_PIN0          2
+#define LED_PIN0           2
 #define LED_PIN1          14
-#define LED_PIN2          7
-#define LED_PIN3          8
-#define LED_PIN4          6
+#define LED_PIN2           7
+#define LED_PIN3           8
+#define LED_PIN4           6
 #define LED_PIN5          20
 #define LED_PIN6          21
-#define LED_PIN7          5
+#define LED_PIN7           5
 
-#define BUTTON_PIN0       0
-#define BUTTON_PIN1       1
-#define BUTTON_PIN2       23
-#define BUTTON_PIN3       22
-#define BUTTON_PIN4       19
-#define BUTTON_PIN5       18
-#define BUTTON_PIN6       17
+#define RX1_PIN            0
+#define TX1_PIN            1
+#define AD_CHANNEL0_PIN   23
+#define AD_CHANNEL1_PIN   22
+#define DIGITAL_PIN0      19
+#define DIGITAL_PIN1      18
+#define DIGITAL_PIN2      17
 
 #define COLOR_ORDER       GRB
 #define CHIPSET           WS2812
 #define NUM_LEDS          60
 #define NUM_STRIPS        8
 
-#define BRIGHTNESS        191
 #define FRAMES_PER_SECOND 60
 
-// For Fire2012
-#define COOLING  75       // 55
-#define SPARKING 120      // 120
+#define FIRE_COOLING      63
 
 CRGB leds[NUM_STRIPS][NUM_LEDS];
 
-void Light();
-void Fire();
+void Earth(int Density);
+void Water(int Waving);
+void Fire(int Sparking);
+void Air(int Bubbling);
+
+char ReadAnalog(int Channel);
+char ReadDigital();

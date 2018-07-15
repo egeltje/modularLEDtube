@@ -3,15 +3,12 @@
 #include "main.h"
 
 void setup() {
+
   // configure IO pins
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(BUTTON_PIN0, INPUT);
-  pinMode(BUTTON_PIN1, INPUT);
-  pinMode(BUTTON_PIN2, INPUT);
-  pinMode(BUTTON_PIN3, INPUT);
-  pinMode(BUTTON_PIN4, INPUT);
-  pinMode(BUTTON_PIN5, INPUT);
-  pinMode(BUTTON_PIN6, INPUT);
+  pinMode(DIGITAL_PIN0, INPUT);
+  pinMode(DIGITAL_PIN1, INPUT);
+  pinMode(DIGITAL_PIN2, INPUT);
 
   // turn on builtin LED on to show running config
   digitalWrite(LED_BUILTIN, HIGH);
@@ -27,7 +24,6 @@ void setup() {
   FastLED.addLeds<CHIPSET, LED_PIN5, COLOR_ORDER>(leds[5], NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.addLeds<CHIPSET, LED_PIN6, COLOR_ORDER>(leds[6], NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.addLeds<CHIPSET, LED_PIN7, COLOR_ORDER>(leds[7], NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.setBrightness( BRIGHTNESS );
 
   // configure switches and potentiometers
   // TODO
@@ -38,57 +34,85 @@ void setup() {
 
 void loop()
 {
-  int state = 0;
+  char state = ReadDigital();
+  char Param1 = ReadAnalog(AD_CHANNEL0_PIN);
+  char Param2 = ReadAnalog(AD_CHANNEL1_PIN);
   // Add entropy to random number generator; we use a lot of it.
   random16_add_entropy( random());
 
   switch (state) {  // run simulation frame depending on state
     case 0:
-      Fire();
+      Earth(Param2);
+      break;
+    case 1:
+      Water(Param2);
+      break;
+    case 2:
+      Fire(Param2);
+      break;
+    case 3:
+      Air(Param2);
       break;
     default:
-      Light();
+      Earth(Param2);
   }
 
+  FastLED.setBrightness(Param1);
   FastLED.show(); // display this frame
   FastLED.delay(1000 / FRAMES_PER_SECOND / NUM_STRIPS);
 }
 
-void Light() {
-  int _i, _j;
+void Earth(int Density) {
+  int i, j;
 
-  for (_i = 0; _i < NUM_STRIPS; _i++) {
-    for( int _j = 0; _j < NUM_LEDS; _j++) {
-      leds[_i][_j] = 0xFF7F00;
+  for (i = 0; i < NUM_STRIPS; i++) {
+    for(j = 0; j < NUM_LEDS; j++) {
+      leds[i][j] = 0xFF7F00;
     }
   }
 }
 
-void Fire() {
-  // Fire2012 by Mark Kriegsman, July 2012
+void Water(int Waving) {
+}
+
+void Fire(int Sparking) {
+  // Inspired by Fire2012 by Mark Kriegsman, July 2012
   // as part of "Five Elements" shown here: http://youtu.be/knWiGsmgycY
+  // gParam1 = COOLING
+  // gParam2 = SPARKING
 
-  static byte _heat[NUM_STRIPS][NUM_LEDS];
-  int _i, _j;
+  static byte heat[NUM_STRIPS][NUM_LEDS];
+  int i, j;
 
-  for (_i = 0; _i < NUM_STRIPS; _i++) {
+  for (i = 0; i < NUM_STRIPS; i++) {
     // Step 1.  Cool down every cell a little
-    for(_j = 0; _j < NUM_LEDS; _j++) {
-      _heat[_i][_j] = qsub8(_heat[_i][_j],  random8(0, ((COOLING * 10) / NUM_LEDS) + 2));
+    for(j = 0; j < NUM_LEDS; j++) {
+      heat[i][j] = qsub8(heat[i][j],  random8(0, ((FIRE_COOLING * 10) / NUM_LEDS) + 2));
     }
     // Step 2.  Heat from each cell drifts 'up' and diffuses a little
-    for(_j= NUM_LEDS - 1; _j >= 2; _j--) {
-      _heat[_i][_j] = (_heat[_i][_j - 1] + _heat[_i][_j - 2] + _heat[_i][_j - 2] ) / 3;
+    for(j= NUM_LEDS - 1; j >= 2; j--) {
+      heat[i][j] = (heat[i][j - 1] + heat[i][j - 2] + heat[i][j - 2] ) / 3;
     }
     // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-    if(random8() < SPARKING) {
-      _j = random8(7);
-      _heat[_i][_j] = qadd8(_heat[_i][_j], random8(160,255));
+    if(random8() < Sparking) {
+      j = random8(7);
+      heat[i][j] = qadd8(heat[i][j], random8(160,255));
     }
     // Step 4.  Map from heat cells to LED colors
-    for(_j = 0; _j < NUM_LEDS; _j++) {
-      CRGB _color = HeatColor(_heat[_i][_j]);
-      leds[_i][_j] = _color;
+    for(j = 0; j < NUM_LEDS; j++) {
+      CRGB color = HeatColor(heat[i][j]);
+      leds[i][j] = color;
     }
   }
+}
+
+void Air(int Bubbling) {
+}
+
+char ReadAnalog(int Channel) {
+  return 63;
+}
+
+char ReadDigital() {
+  return 2;
 }
