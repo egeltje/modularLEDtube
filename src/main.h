@@ -26,6 +26,7 @@
 #define FRAMES_PER_SECOND 60
 
 #define FIRE_COOLING      32
+#define RAINBOW_STEP       4
 
 CRGB leds[NUM_STRIPS][NUM_LEDS];
 

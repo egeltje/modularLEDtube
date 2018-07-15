@@ -126,8 +126,16 @@ void Air(int Bubbling) {
 }
 
 void Rainbow() {
+  static char Gradient;
+
+  if (Gradient < RAINBOW_STEP) {
+    Gradient = 255;
+  } else {
+    Gradient -= RAINBOW_STEP;
+  }
+
   for (int i = 0; i < NUM_STRIPS; i++) {
-    fill_rainbow(leds[i], NUM_LEDS, 0, 5);
+    fill_rainbow(leds[i], NUM_LEDS, Gradient, 4);
   }
 }
 
