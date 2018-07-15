@@ -3,15 +3,9 @@
 #include "main.h"
 
 void setup() {
-
-  // configure IO pins
-  pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(DIGITAL_PIN0, INPUT);
-  pinMode(DIGITAL_PIN1, INPUT);
-  pinMode(DIGITAL_PIN2, INPUT);
-
-  // turn on builtin LED on to show running config
-  digitalWrite(LED_BUILTIN, HIGH);
+  // configure serial ports
+  Serial.begin(115200);
+  Serial1.begin(115200);
 
   delay(100); // sanity delay
 
@@ -26,7 +20,9 @@ void setup() {
   FastLED.addLeds<CHIPSET, LED_PIN7, COLOR_ORDER>(leds[7], NUM_LEDS).setCorrection( TypicalLEDStrip );
 
   // configure switches and potentiometers
-  // TODO
+  pinMode(SWITCH_PIN0, INPUT_PULLUP);
+  pinMode(SWITCH_PIN1, INPUT_PULLUP);
+  pinMode(SWITCH_PIN2, INPUT_PULLUP);
 
   // turn off builtin LED on to show running program
   digitalWrite(LED_BUILTIN, LOW);
@@ -34,27 +30,39 @@ void setup() {
 
 void loop()
 {
-  char state = ReadDigital();
-  char Param1 = ReadAnalog(AD_CHANNEL0_PIN);
-  char Param2 = ReadAnalog(AD_CHANNEL1_PIN);
+  char State = ReadSwitch();
+  char Param1 = ReadAnalog(AD_CHANNEL0);
+  char Param2 = ReadAnalog(AD_CHANNEL1);
   // Add entropy to random number generator; we use a lot of it.
-  random16_add_entropy( random());
+  random16_add_entropy(random());
 
-  switch (state) {  // run simulation frame depending on state
+  switch (ReadSwitch()) {  // run simulation frame depending on state
     case 0:
+      if (State != 0) {
+        State = 0;
+      }
       Earth(Param2);
       break;
     case 1:
+      if (State != 1) {
+        State = 1;
+      }
       Water(Param2);
       break;
     case 2:
+      if (State != 2) {
+        State = 2;
+      }
       Fire(Param2);
       break;
     case 3:
+      if (State != 3) {
+        State = 3;
+      }
       Air(Param2);
       break;
     default:
-      Earth(Param2);
+      Rainbow();
   }
 
   FastLED.setBrightness(Param1);
@@ -73,6 +81,12 @@ void Earth(int Density) {
 }
 
 void Water(int Waving) {
+  static byte liquid[NUM_STRIPS][NUM_LEDS];
+  int i, j;
+  // Step 1.
+  // Step 2.
+  // Step 4.  Map from liquid cells to LED colors
+
 }
 
 void Fire(int Sparking) {
@@ -107,12 +121,22 @@ void Fire(int Sparking) {
 }
 
 void Air(int Bubbling) {
+  static byte gas[NUM_STRIPS][NUM_LEDS];
+  int i, j;
 }
 
-char ReadAnalog(int Channel) {
+void Rainbow() {
+  for (int i = 0; i < NUM_STRIPS; i++) {
+    fill_rainbow(leds[i], NUM_LEDS, 0, 5);
+  }
+}
+
+char ReadAnalog(char Channel) {
   return 63;
+  // return analogRead(Channel);
 }
 
-char ReadDigital() {
-  return 2;
+char ReadSwitch() {
+  return (!digitalRead(SWITCH_PIN0) * 1) + (!digitalRead(SWITCH_PIN1) * 2) + (!digitalRead(SWITCH_PIN2) * 4);
+  //return 2;
 }
