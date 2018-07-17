@@ -70,15 +70,13 @@ void loop()
 void Earth(int Density) {
   static byte solid[NUM_STRIPS][NUM_LEDS];
   int i, j;
-  CRGBPalette16 Palette = earth_gp;
 
   for (i = 0; i < NUM_STRIPS; i++) {
     for(j = 0; j < NUM_LEDS; j++) {
       solid[i][j] = 127;
     }
     for(j = 0; j < NUM_LEDS; j++) {
-      CRGB color = ColorFromPalette( Palette, solid[i][j]);
-      leds[i][j] = color;
+      leds[i][j] = ColorFromPalette((CRGBPalette16)earth_gp, solid[i][j]);
     }
   }
 }
@@ -88,18 +86,18 @@ void Water(int Level) {
   // the beatsin8 funcion.
   static byte liquid[NUM_STRIPS][NUM_LEDS];
   int i, j;
-  CRGBPalette16 Palette = water_gp;
 
   for (i = 0; i < NUM_STRIPS; i++) {
-    for (j = 0; j < (NUM_LEDS / (255 / Level)); j++) {
-      liquid[i][j] = beatsin8((WATER_LEVEL - j) / 2);
-    }
-    for (j = (NUM_LEDS / (255 / Level)); j < NUM_LEDS; j++) {
-      liquid[i][j] = 0;
+
+    for (j = 0; j < NUM_LEDS; j++) {
+      if (j < (NUM_LEDS / (255 / Level))) {
+        liquid[i][j] = beatsin8((Level - j) / 4);
+      } else {
+        liquid[i][j] = 0;
+      }
     }
     for(j = 0; j < NUM_LEDS; j++) {
-      CRGB color = ColorFromPalette( Palette, liquid[i][j]);
-      leds[i][j] = color;
+      leds[i][j] = ColorFromPalette((CRGBPalette16)water_gp, liquid[i][j]);
     }
   }
 }
@@ -129,8 +127,7 @@ void Fire(int Sparking) {
     }
     // Step 4.  Map from heat cells to LED colors
     for(j = 0; j < NUM_LEDS; j++) {
-      CRGB color = HeatColor(heat[i][j]);
-      leds[i][j] = color;
+      leds[i][j] = HeatColor(heat[i][j]);
     }
   }
 }
@@ -138,7 +135,6 @@ void Fire(int Sparking) {
 void Air(int Bubbling) {
   static byte gas[NUM_STRIPS][NUM_LEDS];
   int i, j;
-  CRGBPalette16 Palette = gas_gp;
 
   for (i = 0; i < NUM_STRIPS; i++) {
     for(j = 0; j < NUM_LEDS; j++) {
@@ -149,8 +145,7 @@ void Air(int Bubbling) {
       gas[i][j] = qadd8(gas[i][j], random8(160,255));
     }
     for(j = 0; j < NUM_LEDS; j++) {
-      CRGB color = ColorFromPalette( Palette, gas[i][j]);
-      leds[i][j] = color;
+      leds[i][j] = ColorFromPalette((CRGBPalette16)air_gp, gas[i][j]);
     }
   }
 }

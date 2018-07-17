@@ -36,12 +36,18 @@ DEFINE_GRADIENT_PALETTE( earth_gp ) {
 255, 127, 127,   0
 };
 DEFINE_GRADIENT_PALETTE( water_gp ) {
-  0,  0,    0,   0,   //
-  1,  0,    0, 127,   //
+  0,   0,   0,   0,   //
+  1,   0,   0, 127,   //
 223,  63,  63, 255,   //
 255, 127, 127, 255
 };
-DEFINE_GRADIENT_PALETTE( gas_gp ) {
+DEFINE_GRADIENT_PALETTE( fire_gp ) {
+  0,   0,   0,   0,   //
+ 63,  63,   0,   0,   //
+127, 191, 127,   0,   //
+255, 255, 255, 255
+};
+DEFINE_GRADIENT_PALETTE( air_gp ) {
   0,   0,   0,   0,   //
 255, 127, 127, 127
 };
