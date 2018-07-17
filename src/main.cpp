@@ -95,7 +95,7 @@ void Earth(int Density) {
   }
 }
 
-void Water(int Waving) {
+void Water(int Level) {
   // Direct plotting values to the leds, because consistency is preserved by
   // the beatsin8 funcion.
   static byte liquid[NUM_STRIPS][NUM_LEDS];
@@ -103,10 +103,10 @@ void Water(int Waving) {
   CRGBPalette16 Palette = water_gp;
 
   for (i = 0; i < NUM_STRIPS; i++) {
-    for (j = 0; j < WATER_LEVEL; j++) {
+    for (j = 0; j < (NUM_LEDS / (255 / Level)); j++) {
       liquid[i][j] = beatsin8((WATER_LEVEL - j) / 2);
     }
-    for (j = WATER_LEVEL; j < NUM_LEDS; j++) {
+    for (j = (NUM_LEDS / (255 / Level)); j < NUM_LEDS; j++) {
       liquid[i][j] = 0;
     }
     for(j = 0; j < NUM_LEDS; j++) {

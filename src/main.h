@@ -32,7 +32,7 @@
 CRGB leds[NUM_STRIPS][NUM_LEDS];
 
 void Earth(int Density);
-void Water(int Waving);
+void Water(int Level);
 void Fire(int Sparking);
 void Air(int Bubbling);
 void Rainbow();
