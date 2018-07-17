@@ -13,6 +13,10 @@ DEFINE_GRADIENT_PALETTE( water_gp ) {
 223,  63,  63, 255,   //
 255, 127, 127, 255
 };
+DEFINE_GRADIENT_PALETTE( gas_gp ) {
+  0,   0,   0,   0,   //
+255, 127, 127, 127
+};
 
 void setup() {
   // configure serial ports
@@ -150,6 +154,21 @@ void Fire(int Sparking) {
 void Air(int Bubbling) {
   static byte gas[NUM_STRIPS][NUM_LEDS];
   int i, j;
+  CRGBPalette16 Palette = gas_gp;
+
+  for (i = 0; i < NUM_STRIPS; i++) {
+    for(j = 0; j < NUM_LEDS; j++) {
+      gas[i][j + 1] = gas[i][j];
+    }
+    if(random8() < Bubbling) {
+      j = random8(7);
+      gas[i][j] = qadd8(gas[i][j], random8(160,255));
+    }
+    for(j = 0; j < NUM_LEDS; j++) {
+      CRGB color = ColorFromPalette( Palette, gas[i][j]);
+      leds[i][j] = color;
+    }
+  }
 }
 
 void Rainbow() {
