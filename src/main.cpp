@@ -89,6 +89,11 @@ void Water(int Waving) {
       leds[i][j] = ColorFromPalette( Palette, beatsin8(j/2, 0, 255), 255, LINEARBLEND);
     }
   }
+  for (i = 0; i < NUM_STRIPS; i++) {
+    for (j = WATER_LEVEL; j < NUM_LEDS - 1; j++) {
+      leds[i][j] = CRGB::Black;
+    }
+  }
 }
 
 void Fire(int Sparking) {
