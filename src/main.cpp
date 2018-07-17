@@ -3,10 +3,13 @@
 #include "main.h"
 
 extern const TProgmemRGBGradientPalettePtr gGradientPalettes[];
-
+DEFINE_GRADIENT_PALETTE( earth_gp ) {
+  0,   0,   0,   0,   //
+255, 127, 127,   0
+};
 DEFINE_GRADIENT_PALETTE( water_gp ) {
-  0,  0,    0, 127,   //
-191,  31,  31, 127,   //
+  0,  0,    0,   0,   //
+  1,  0,    0, 127,   //
 223,  63,  63, 255,   //
 255, 127, 127, 255
 };
@@ -77,11 +80,17 @@ void loop()
 }
 
 void Earth(int Density) {
+  static byte solid[NUM_STRIPS][NUM_LEDS];
   int i, j;
+  CRGBPalette16 Palette = earth_gp;
 
   for (i = 0; i < NUM_STRIPS; i++) {
     for(j = 0; j < NUM_LEDS; j++) {
-      leds[i][j] = 0xFF7F00;
+      solid[i][j] = 127;
+    }
+    for(j = 0; j < NUM_LEDS; j++) {
+      CRGB color = ColorFromPalette( Palette, solid[i][j]);
+      leds[i][j] = color;
     }
   }
 }
@@ -89,18 +98,20 @@ void Earth(int Density) {
 void Water(int Waving) {
   // Direct plotting values to the leds, because consistency is preserved by
   // the beatsin8 funcion.
-  //static byte liquid[NUM_STRIPS][NUM_LEDS];
+  static byte liquid[NUM_STRIPS][NUM_LEDS];
   int i, j;
   CRGBPalette16 Palette = water_gp;
 
   for (i = 0; i < NUM_STRIPS; i++) {
     for (j = 0; j < WATER_LEVEL; j++) {
-      leds[i][j] = ColorFromPalette( Palette, beatsin8((WATER_LEVEL - j) / 2));
+      liquid[i][j] = beatsin8((WATER_LEVEL - j) / 2);
     }
-  }
-  for (i = 0; i < NUM_STRIPS; i++) {
     for (j = WATER_LEVEL; j < NUM_LEDS; j++) {
-      leds[i][j] = CRGB::Black;
+      liquid[i][j] = 0;
+    }
+    for(j = 0; j < NUM_LEDS; j++) {
+      CRGB color = ColorFromPalette( Palette, liquid[i][j]);
+      leds[i][j] = color;
     }
   }
 }

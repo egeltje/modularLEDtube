@@ -26,7 +26,7 @@
 #define FRAMES_PER_SECOND 60
 
 #define FIRE_COOLING      32
-#define WATER_LEVEL       20
+#define WATER_LEVEL       NUM_LEDS / 3 // fill tubes with 1/3th of water
 #define RAINBOW_STEP       4
 
 CRGB leds[NUM_STRIPS][NUM_LEDS];
