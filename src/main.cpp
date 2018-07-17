@@ -78,27 +78,15 @@ void Earth(int Density) {
 }
 
 void Water(int Waving) {
-  static byte liquid[NUM_STRIPS][NUM_LEDS];
+  // Direct plotting values to the leds, because consistency is preserved by
+  // the beatsin8 funcion.
+  //static byte liquid[NUM_STRIPS][NUM_LEDS];
   int i, j;
-//  CRGBPalette16 Palette = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
+  CRGBPalette16 Palette = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
 
   for (i = 0; i < NUM_STRIPS; i++) {
-    // Step 1.
-
-    // Step 2.  Droplets in each tube fall 'down' till wave level.
-    for(j = 10; j < NUM_LEDS - 1; j++) {
-      liquid[i][j] = liquid[i][j + 1];
-      liquid[i][j + 1] = CRGB::Black;
-    }
-    // Step 3.  Randomly drop new 'droplets' of water at the top
-    if(random8() < Waving / 8) {
-      liquid[i][NUM_LEDS - 1] = CRGB::Blue;
-    }
-    // Step 4.  Map from heat cells to LED colors
-    for(j = 0; j < NUM_LEDS; j++) {
-//      CRGB color = ColorFromPalette(Palette, liquid[i][j]);
-//      leds[i][j] = color;
-      leds[i][j] = liquid[i][j];
+    for (j = 0; j < WATER_LEVEL; j++) {
+      leds[i][j] = ColorFromPalette( Palette, beatsin8(j/2, 0, 255), 255, LINEARBLEND);
     }
   }
 }
