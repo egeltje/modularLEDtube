@@ -31,6 +31,22 @@
 
 CRGB leds[NUM_STRIPS][NUM_LEDS];
 
+DEFINE_GRADIENT_PALETTE( earth_gp ) {
+  0,   0,   0,   0,   //
+255, 127, 127,   0
+};
+DEFINE_GRADIENT_PALETTE( water_gp ) {
+  0,  0,    0,   0,   //
+  1,  0,    0, 127,   //
+223,  63,  63, 255,   //
+255, 127, 127, 255
+};
+DEFINE_GRADIENT_PALETTE( gas_gp ) {
+  0,   0,   0,   0,   //
+255, 127, 127, 127
+};
+
+
 void Earth(int Density);
 void Water(int Level);
 void Fire(int Sparking);

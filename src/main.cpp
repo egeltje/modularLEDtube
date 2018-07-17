@@ -2,22 +2,6 @@
 #include <FastLED.h>
 #include "main.h"
 
-extern const TProgmemRGBGradientPalettePtr gGradientPalettes[];
-DEFINE_GRADIENT_PALETTE( earth_gp ) {
-  0,   0,   0,   0,   //
-255, 127, 127,   0
-};
-DEFINE_GRADIENT_PALETTE( water_gp ) {
-  0,  0,    0,   0,   //
-  1,  0,    0, 127,   //
-223,  63,  63, 255,   //
-255, 127, 127, 255
-};
-DEFINE_GRADIENT_PALETTE( gas_gp ) {
-  0,   0,   0,   0,   //
-255, 127, 127, 127
-};
-
 void setup() {
   // configure serial ports
   Serial.begin(115200);
