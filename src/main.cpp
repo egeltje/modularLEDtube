@@ -2,6 +2,15 @@
 #include <FastLED.h>
 #include "main.h"
 
+extern const TProgmemRGBGradientPalettePtr gGradientPalettes[];
+
+DEFINE_GRADIENT_PALETTE( water_gp ) {
+  0,  0,    0, 127,   //
+191,  31,  31, 127,   //
+223,  63,  63, 255,   //
+255, 127, 127, 255
+};
+
 void setup() {
   // configure serial ports
   Serial.begin(115200);
@@ -82,15 +91,15 @@ void Water(int Waving) {
   // the beatsin8 funcion.
   //static byte liquid[NUM_STRIPS][NUM_LEDS];
   int i, j;
-  CRGBPalette16 Palette = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
+  CRGBPalette16 Palette = water_gp;
 
   for (i = 0; i < NUM_STRIPS; i++) {
     for (j = 0; j < WATER_LEVEL; j++) {
-      leds[i][j] = ColorFromPalette( Palette, beatsin8(j/2, 0, 255), 255, LINEARBLEND);
+      leds[i][j] = ColorFromPalette( Palette, beatsin8((WATER_LEVEL - j) / 2));
     }
   }
   for (i = 0; i < NUM_STRIPS; i++) {
-    for (j = WATER_LEVEL; j < NUM_LEDS - 1; j++) {
+    for (j = WATER_LEVEL; j < NUM_LEDS; j++) {
       leds[i][j] = CRGB::Black;
     }
   }
