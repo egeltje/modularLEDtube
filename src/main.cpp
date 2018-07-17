@@ -7,8 +7,6 @@ void setup() {
   Serial.begin(115200);
   Serial1.begin(115200);
 
-  delay(100); // sanity delay
-
   // configure lED strips in FastLED array
   FastLED.addLeds<CHIPSET, LED_PIN0, COLOR_ORDER>(leds[0], NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.addLeds<CHIPSET, LED_PIN1, COLOR_ORDER>(leds[1], NUM_LEDS).setCorrection( TypicalLEDStrip );
@@ -19,20 +17,19 @@ void setup() {
   FastLED.addLeds<CHIPSET, LED_PIN6, COLOR_ORDER>(leds[6], NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.addLeds<CHIPSET, LED_PIN7, COLOR_ORDER>(leds[7], NUM_LEDS).setCorrection( TypicalLEDStrip );
 
+  delay(100); // sanity delay
+
   // configure switches and potentiometers
   pinMode(SWITCH_PIN0, INPUT_PULLUP);
   pinMode(SWITCH_PIN1, INPUT_PULLUP);
   pinMode(SWITCH_PIN2, INPUT_PULLUP);
-
-  // turn off builtin LED on to show running program
-  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void loop()
 {
-  char State = ReadSwitch();
-  char Param1 = ReadAnalog(AD_CHANNEL0);
-  char Param2 = ReadAnalog(AD_CHANNEL1);
+  char State = 0;
+  char Param1 = ReadPot(POT_BRIGHTNESS);
+  char Param2 = ReadPot(POT_EFFECT);
   // Add entropy to random number generator; we use a lot of it.
   random16_add_entropy(random());
 
@@ -83,10 +80,27 @@ void Earth(int Density) {
 void Water(int Waving) {
   static byte liquid[NUM_STRIPS][NUM_LEDS];
   int i, j;
-  // Step 1.
-  // Step 2.
-  // Step 4.  Map from liquid cells to LED colors
+//  CRGBPalette16 Palette = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
 
+  for (i = 0; i < NUM_STRIPS; i++) {
+    // Step 1.
+
+    // Step 2.  Droplets in each tube fall 'down' till wave level.
+    for(j = 10; j < NUM_LEDS - 1; j++) {
+      liquid[i][j] = liquid[i][j + 1];
+      liquid[i][j + 1] = CRGB::Black;
+    }
+    // Step 3.  Randomly drop new 'droplets' of water at the top
+    if(random8() < Waving / 8) {
+      liquid[i][NUM_LEDS - 1] = CRGB::Blue;
+    }
+    // Step 4.  Map from heat cells to LED colors
+    for(j = 0; j < NUM_LEDS; j++) {
+//      CRGB color = ColorFromPalette(Palette, liquid[i][j]);
+//      leds[i][j] = color;
+      leds[i][j] = liquid[i][j];
+    }
+  }
 }
 
 void Fire(int Sparking) {
@@ -139,7 +153,7 @@ void Rainbow() {
   }
 }
 
-char ReadAnalog(char Channel) {
+char ReadPot(char Channel) {
   return 63;
   // return analogRead(Channel);
 }

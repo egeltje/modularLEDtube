@@ -15,8 +15,8 @@
 #define TX1_PIN            1
 #define RX1_PIN            0
 
-#define AD_CHANNEL0        9 // original channel 9
-#define AD_CHANNEL1        8 // original channel 8
+#define POT_BRIGHTNESS     8 // original channel 8
+#define POT_EFFECT         9 // original channel 9
 
 #define COLOR_ORDER       GRB
 #define CHIPSET           WS2812
@@ -36,5 +36,5 @@ void Fire(int Sparking);
 void Air(int Bubbling);
 void Rainbow();
 
-char ReadAnalog(char Channel);
+char ReadPot(char Channel);
 char ReadSwitch();
