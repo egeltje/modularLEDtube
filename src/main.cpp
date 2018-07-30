@@ -82,16 +82,13 @@ void Earth(int Density) {
 }
 
 void Water(int Level) {
-  // Direct plotting values to the leds, because consistency is preserved by
-  // the beatsin8 funcion.
   static byte liquid[NUM_STRIPS][NUM_LEDS];
   int i, j;
 
   for (i = 0; i < NUM_STRIPS; i++) {
-
     for (j = 0; j < NUM_LEDS; j++) {
       if (j < (NUM_LEDS / (255 / Level))) {
-        liquid[i][j] = beatsin8((Level - j) / 4);
+        liquid[i][j] = beatsin8(j);
       } else {
         liquid[i][j] = 0;
       }
@@ -128,6 +125,7 @@ void Fire(int Sparking) {
     // Step 4.  Map from heat cells to LED colors
     for(j = 0; j < NUM_LEDS; j++) {
       leds[i][j] = HeatColor(heat[i][j]);
+//      leds[i][j] = ColorFromPalette((CRGBPalette16)fire_gp, heat[i][j]);
     }
   }
 }
