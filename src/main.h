@@ -20,7 +20,7 @@
 
 #define COLOR_ORDER       GRB
 #define CHIPSET           WS2812
-#define NUM_LEDS          60
+#define NUM_LEDS          48
 #define NUM_STRIPS        8
 
 #define FRAMES_PER_SECOND 60
@@ -32,23 +32,23 @@
 CRGB leds[NUM_STRIPS][NUM_LEDS];
 
 DEFINE_GRADIENT_PALETTE( earth_gp ) {
-  0,   0,   0,   0,   //
+  0,   0,   0,   0,
 255, 127, 127,   0
 };
 DEFINE_GRADIENT_PALETTE( water_gp ) {
-  0,   0,   0,   0,   //
-  1,   0,   0, 127,   //
-223,  63,  63, 255,   //
-255, 127, 127, 255
+  0,   0,   0,   0,
+  1,   0,   0, 127,
+223,  31,  31, 255,
+255,  63,  63, 255
 };
 DEFINE_GRADIENT_PALETTE( fire_gp ) {
-  0,   0,   0,   0,   //
- 63,  63,   0,   0,   //
-127, 191, 127,   0,   //
+  0,   0,   0,   0,
+ 63, 255,   0,   0,
+127, 255, 255,   0,
 255, 255, 255, 255
 };
 DEFINE_GRADIENT_PALETTE( air_gp ) {
-  0,   0,   0,   0,   //
+  0,   0,   0,   0,
 255, 127, 127, 127
 };
 
