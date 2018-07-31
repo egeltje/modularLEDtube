@@ -1,5 +1,7 @@
 # modularLEDtube
-A stackable tube with ws2812 LED's that can be combined to create an organ-like sculpture.
+A stackable tube with ws2812 LED's that can be combined to create an organ-like 
+sculpture and display various light effects.
+
 
 https://www.pjrc.com/store/teensy32.html
 https://www.pjrc.com/store/octo28_adaptor.html
