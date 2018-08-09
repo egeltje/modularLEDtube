@@ -19,15 +19,13 @@
 #define POT_EFFECT1        4 // original channel 4
 #define POT_EFFECT2        5 // original channel 5
 
-#define COLOR_ORDER       GRB
-#define CHIPSET           WS2812
+#define COLOR_ORDER        GRB
+#define CHIPSET            WS2812
 #define NUM_LEDS          48
 #define NUM_STRIPS         8
 
 #define FRAMES_PER_SECOND 60
 
-#define FIRE_COOLING      32
-#define WATER_LEVEL       NUM_LEDS / 3 // fill tubes with 1/3th of water
 #define RAINBOW_STEP       4
 
 CRGB leds[NUM_STRIPS][NUM_LEDS];
@@ -54,11 +52,11 @@ DEFINE_GRADIENT_PALETTE( air_gp ) {
 };
 
 
-void Earth(char Density);
-void Water(char Level, char Waves);
-void Fire(char Sparking, char Cooling);
-void Air(char Bubbling);
+void Earth(uint8_t Density);
+void Water(uint8_t Level, uint8_t Waves);
+void Fire(uint8_t Sparking, uint8_t Cooling);
+void Air(uint8_t Bubbling);
 void Rainbow();
 
-char ReadPot(char Channel);
-char ReadSwitch();
+uint8_t ReadPot(uint8_t Channel);
+uint8_t ReadSwitch();

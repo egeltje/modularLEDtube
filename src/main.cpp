@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <FastLED.h>
+#include <stdint.h>
 #include "main.h"
 
 void setup() {
@@ -26,10 +27,10 @@ void setup() {
 
 void loop()
 {
-  char State = 0;
-  char Param1 = ReadPot(POT_EFFECT1);
-  char Param2 = ReadPot(POT_EFFECT2);
-  char Param3 = ReadPot(POT_BRIGHTNESS);
+  uint8_t State = 0;
+  uint8_t Param1 = ReadPot(POT_EFFECT1);
+  uint8_t Param2 = ReadPot(POT_EFFECT2);
+  uint8_t Param3 = ReadPot(POT_BRIGHTNESS);
   // Add entropy to random number generator; we use a lot of it.
   random16_add_entropy(random());
 
@@ -67,8 +68,8 @@ void loop()
   FastLED.delay(1000 / FRAMES_PER_SECOND / NUM_STRIPS);
 }
 
-void Earth(char Density) {
-  static byte solid[NUM_STRIPS][NUM_LEDS];
+void Earth(uint8_t Density) {
+  static uint8_t solid[NUM_STRIPS][NUM_LEDS];
   int i, j;
 
   for (i = 0; i < NUM_STRIPS; i++) {
@@ -81,8 +82,8 @@ void Earth(char Density) {
   }
 }
 
-void Water(char Level, char Waves) {
-  static byte liquid[NUM_STRIPS][NUM_LEDS];
+void Water(uint8_t Level, uint8_t Waves) {
+  static uint8_t liquid[NUM_STRIPS][NUM_LEDS];
   int i, j;
 
   for (i = 0; i < NUM_STRIPS; i++) {
@@ -99,11 +100,11 @@ void Water(char Level, char Waves) {
   }
 }
 
-void Fire(char Sparking, char Cooling) {
+void Fire(uint8_t Sparking, uint8_t Cooling) {
   // Inspired by Fire2012 by Mark Kriegsman, July 2012
   // as part of "Five Elements" shown here: http://youtu.be/knWiGsmgycY
 
-  static byte heat[NUM_STRIPS][NUM_LEDS];
+  static uint8_t heat[NUM_STRIPS][NUM_LEDS];
   int i, j;
 
   for (i = 0; i < NUM_STRIPS; i++) {
@@ -128,8 +129,8 @@ void Fire(char Sparking, char Cooling) {
   }
 }
 
-void Air(char Bubbling) {
-  static byte gas[NUM_STRIPS][NUM_LEDS];
+void Air(uint8_t Bubbling) {
+  static uint8_t gas[NUM_STRIPS][NUM_LEDS];
   int i, j;
 
   for (i = 0; i < NUM_STRIPS; i++) {
@@ -147,7 +148,7 @@ void Air(char Bubbling) {
 }
 
 void Rainbow() {
-  static char Gradient;
+  static uint8_t Gradient;
 
   if (Gradient < RAINBOW_STEP) {
     Gradient = 255;
@@ -160,12 +161,12 @@ void Rainbow() {
   }
 }
 
-char ReadPot(char Channel) {
+uint8_t ReadPot(uint8_t Channel) {
   return 63;
   // return analogRead(Channel);
 }
 
-char ReadSwitch() {
+uint8_t ReadSwitch() {
   return ((!digitalRead(SWITCH_PIN0) * 1) + (!digitalRead(SWITCH_PIN1) * 2));
   //return 2;
 }
