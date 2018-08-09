@@ -22,14 +22,14 @@ void setup() {
   // configure switches and potentiometers
   pinMode(SWITCH_PIN0, INPUT_PULLUP);
   pinMode(SWITCH_PIN1, INPUT_PULLUP);
-  pinMode(SWITCH_PIN2, INPUT_PULLUP);
 }
 
 void loop()
 {
   char State = 0;
-  char Param1 = ReadPot(POT_BRIGHTNESS);
-  char Param2 = ReadPot(POT_EFFECT);
+  char Param1 = ReadPot(POT_EFFECT1);
+  char Param2 = ReadPot(POT_EFFECT2);
+  char Param3 = ReadPot(POT_BRIGHTNESS);
   // Add entropy to random number generator; we use a lot of it.
   random16_add_entropy(random());
 
@@ -38,36 +38,36 @@ void loop()
       if (State != 0) {
         State = 0;
       }
-      Earth(Param2);
+      Earth(Param1);
       break;
     case 1:
       if (State != 1) {
         State = 1;
       }
-      Water(Param2);
+      Water(Param1, Param2);
       break;
     case 2:
       if (State != 2) {
         State = 2;
       }
-      Fire(Param2);
+      Fire(Param1, Param2);
       break;
     case 3:
       if (State != 3) {
         State = 3;
       }
-      Air(Param2);
+      Air(Param1);
       break;
     default:
       Rainbow();
   }
 
-  FastLED.setBrightness(Param1);
+  FastLED.setBrightness(Param3);
   FastLED.show(); // display this frame
   FastLED.delay(1000 / FRAMES_PER_SECOND / NUM_STRIPS);
 }
 
-void Earth(int Density) {
+void Earth(char Density) {
   static byte solid[NUM_STRIPS][NUM_LEDS];
   int i, j;
 
@@ -81,7 +81,7 @@ void Earth(int Density) {
   }
 }
 
-void Water(int Level) {
+void Water(char Level, char Waves) {
   static byte liquid[NUM_STRIPS][NUM_LEDS];
   int i, j;
 
@@ -99,11 +99,9 @@ void Water(int Level) {
   }
 }
 
-void Fire(int Sparking) {
+void Fire(char Sparking, char Cooling) {
   // Inspired by Fire2012 by Mark Kriegsman, July 2012
   // as part of "Five Elements" shown here: http://youtu.be/knWiGsmgycY
-  // gParam1 = COOLING
-  // gParam2 = SPARKING
 
   static byte heat[NUM_STRIPS][NUM_LEDS];
   int i, j;
@@ -111,7 +109,7 @@ void Fire(int Sparking) {
   for (i = 0; i < NUM_STRIPS; i++) {
     // Step 1.  Cool down every cell a little
     for(j = 0; j < NUM_LEDS; j++) {
-      heat[i][j] = qsub8(heat[i][j],  random8(0, ((FIRE_COOLING * 10) / NUM_LEDS) + 2));
+      heat[i][j] = qsub8(heat[i][j],  random8(0, ((Cooling * 10) / NUM_LEDS) + 2));
     }
     // Step 2.  Heat from each cell drifts 'up' and diffuses a little
     for(j= NUM_LEDS - 1; j >= 2; j--) {
@@ -130,7 +128,7 @@ void Fire(int Sparking) {
   }
 }
 
-void Air(int Bubbling) {
+void Air(char Bubbling) {
   static byte gas[NUM_STRIPS][NUM_LEDS];
   int i, j;
 
@@ -168,6 +166,6 @@ char ReadPot(char Channel) {
 }
 
 char ReadSwitch() {
-  return (!digitalRead(SWITCH_PIN0) * 1) + (!digitalRead(SWITCH_PIN1) * 2) + (!digitalRead(SWITCH_PIN2) * 4);
+  return ((!digitalRead(SWITCH_PIN0) * 1) + (!digitalRead(SWITCH_PIN1) * 2));
   //return 2;
 }
