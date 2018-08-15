@@ -26,6 +26,8 @@
 
 #define FRAMES_PER_SECOND 60
 
+#define WATER_NOISE_SCALE 64
+
 #define RAINBOW_STEP       4
 
 CRGB leds[NUM_STRIPS][NUM_LEDS];
@@ -36,10 +38,14 @@ DEFINE_GRADIENT_PALETTE( earth_gp ) {
 };
 DEFINE_GRADIENT_PALETTE( water_gp ) {
   0,   0,   0,   0,
+255,  63,  63, 255
+};
+/*DEFINE_GRADIENT_PALETTE( water_gp ) {
+  0,   0,   0,   0,
   1,   0,   0, 127,
 223,  31,  31, 255,
 255,  63,  63, 255
-};
+};*/
 DEFINE_GRADIENT_PALETTE( fire_gp ) {
   0,   0,   0,   0,
  63, 255,   0,   0,

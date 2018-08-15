@@ -3,6 +3,11 @@
 #include <stdint.h>
 #include "main.h"
 
+// The 32bit version of our coordinates
+static uint16_t x;
+static uint16_t y;
+static uint16_t z;
+
 void setup() {
   // configure serial ports
   Serial.begin(115200);
@@ -19,6 +24,11 @@ void setup() {
   FastLED.addLeds<CHIPSET, LED_PIN7, COLOR_ORDER>(leds[7], NUM_LEDS).setCorrection( TypicalLEDStrip );
 
   delay(100); // sanity delay
+
+  // Initialize our coordinates to some random values
+  x = random16();
+  y = random16();
+  z = random16();
 
   // configure switches and potentiometers
   pinMode(SWITCH_PIN0, INPUT_PULLUP);
@@ -70,7 +80,7 @@ void loop()
 
 void Earth(uint8_t Density) {
   static uint8_t solid[NUM_STRIPS][NUM_LEDS];
-  int i, j;
+  uint8_t i, j;
 
   for (i = 0; i < NUM_STRIPS; i++) {
     for(j = 0; j < NUM_LEDS; j++) {
@@ -84,16 +94,16 @@ void Earth(uint8_t Density) {
 
 void Water(uint8_t Level, uint8_t Waves) {
   static uint8_t liquid[NUM_STRIPS][NUM_LEDS];
-  int i, j;
+  uint8_t i, j;
+  int iOffset, jOffset;
 
   for (i = 0; i < NUM_STRIPS; i++) {
-    for (j = 0; j < NUM_LEDS; j++) {
-      if (j < (NUM_LEDS / (255 / Level))) {
-        liquid[i][j] = beatsin8(j);
-      } else {
-        liquid[i][j] = 0;
-      }
+    iOffset = i * WATER_NOISE_SCALE;
+    for (j = 0; j < (NUM_LEDS / (255 / Level)); j++) {
+      jOffset = j * WATER_NOISE_SCALE;
+      liquid[i][j] = inoise8(x + iOffset, y + jOffset, z);
     }
+    z = z + 1;
     for(j = 0; j < NUM_LEDS; j++) {
       leds[i][j] = ColorFromPalette((CRGBPalette16)water_gp, liquid[i][j]);
     }
@@ -105,7 +115,7 @@ void Fire(uint8_t Sparking, uint8_t Cooling) {
   // as part of "Five Elements" shown here: http://youtu.be/knWiGsmgycY
 
   static uint8_t heat[NUM_STRIPS][NUM_LEDS];
-  int i, j;
+  uint8_t i, j;
 
   for (i = 0; i < NUM_STRIPS; i++) {
     // Step 1.  Cool down every cell a little
@@ -131,7 +141,7 @@ void Fire(uint8_t Sparking, uint8_t Cooling) {
 
 void Air(uint8_t Bubbling) {
   static uint8_t gas[NUM_STRIPS][NUM_LEDS];
-  int i, j;
+  uint8_t i, j;
 
   for (i = 0; i < NUM_STRIPS; i++) {
     for(j = 0; j < NUM_LEDS; j++) {
@@ -156,13 +166,13 @@ void Rainbow() {
     Gradient -= RAINBOW_STEP;
   }
 
-  for (int i = 0; i < NUM_STRIPS; i++) {
+  for (uint8_t i = 0; i < NUM_STRIPS; i++) {
     fill_rainbow(leds[i], NUM_LEDS, Gradient, 4);
   }
 }
 
 uint8_t ReadPot(uint8_t Channel) {
-  return 63;
+  return 127;
   // return analogRead(Channel);
 }
 
