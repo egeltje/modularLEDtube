@@ -3,11 +3,6 @@
 #include <stdint.h>
 #include "main.h"
 
-// The 32bit version of our coordinates
-static uint16_t x;
-static uint16_t y;
-static uint16_t z;
-
 void setup() {
   // configure serial ports
   Serial.begin(115200);

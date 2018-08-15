@@ -57,6 +57,10 @@ DEFINE_GRADIENT_PALETTE( air_gp ) {
 255, 127, 127, 127
 };
 
+// The 32bit version of our coordinates
+static uint16_t x;
+static uint16_t y;
+static uint16_t z;
 
 void Earth(uint8_t Density);
 void Water(uint8_t Level, uint8_t Waves);
