@@ -24,7 +24,7 @@
 #define NUM_LEDS          48
 #define NUM_STRIPS         8
 
-#define FRAMES_PER_SECOND 60
+#define FRAME_DELAY       40
 
 #define WATER_NOISE_SCALE 64
 

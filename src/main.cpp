@@ -44,38 +44,39 @@ void loop()
   // Add entropy to random number generator; we use a lot of it.
   random16_add_entropy(random());
 
-  switch (ReadSwitch()) {  // run simulation frame depending on state
-    case 0:
-      if (State != 0) {
-        State = 0;
-      }
-      Earth(Param1);
-      break;
-    case 1:
-      if (State != 1) {
-        State = 1;
-      }
-      Water(Param1, Param2);
-      break;
-    case 2:
-      if (State != 2) {
-        State = 2;
-      }
-      Fire(Param1, Param2);
-      break;
-    case 3:
-      if (State != 3) {
-        State = 3;
-      }
-      Air(Param1);
-      break;
-    default:
-      Rainbow();
-  }
+  EVERY_N_MILLISECONDS(FRAME_DELAY) {
+    switch (ReadSwitch()) {  // run simulation frame depending on state
+      case 0:
+        if (State != 0) {
+          State = 0;
+        }
+        Earth(Param1);
+        break;
+      case 1:
+        if (State != 1) {
+          State = 1;
+        }
+        Water(Param1, Param2);
+        break;
+      case 2:
+        if (State != 2) {
+          State = 2;
+        }
+        Fire(Param1, Param2);
+        break;
+      case 3:
+        if (State != 3) {
+          State = 3;
+        }
+        Air(Param1);
+        break;
+      default:
+        Rainbow();
+    }
 
-  FastLED.setBrightness(Param3);
-  FastLED.show(); // display this frame
-  FastLED.delay(1000 / FRAMES_PER_SECOND / NUM_STRIPS);
+    FastLED.setBrightness(Param3);
+    FastLED.show(); // display this frame
+  }
 }
 
 void Earth(uint8_t Density) {
