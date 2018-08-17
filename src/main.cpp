@@ -37,7 +37,7 @@ void loop()
   uint8_t Param2 = ReadPot(POT_EFFECT2);
   uint8_t Param3 = ReadPot(POT_BRIGHTNESS);
   // Add entropy to random number generator; we use a lot of it.
-  random16_add_entropy(random());
+//  random16_add_entropy(random());
 
   EVERY_N_MILLISECONDS(FRAME_DELAY) {
     switch (ReadSwitch()) {  // run simulation frame depending on state
@@ -45,7 +45,7 @@ void loop()
         if (State != 0) {
           State = 0;
         }
-        Earth(Param1);
+        Earth(Param1, Param2);
         break;
       case 1:
         if (State != 1) {
@@ -63,7 +63,7 @@ void loop()
         if (State != 3) {
           State = 3;
         }
-        Air(Param1);
+        Air(Param1, Param2);
         break;
       default:
         Rainbow();
@@ -74,13 +74,16 @@ void loop()
   }
 }
 
-void Earth(uint8_t Density) {
+void Earth(uint8_t Density, uint8_t Level) {
   static uint8_t solid[NUM_STRIPS][NUM_LEDS];
   uint8_t i, j;
+  int iOffset, jOffset;
 
   for (i = 0; i < NUM_STRIPS; i++) {
-    for(j = 0; j < NUM_LEDS; j++) {
-      solid[i][j] = 127;
+    iOffset = i * EARTH_NOISE_SCALE;
+    for (j = 0; j < (NUM_LEDS / (255 / Level)); j++) {
+      jOffset = j * EARTH_NOISE_SCALE;
+      solid[i][j] = inoise8(x + iOffset, y + jOffset, (Density * 10));
     }
     for(j = 0; j < NUM_LEDS; j++) {
       leds[i][j] = ColorFromPalette((CRGBPalette16)earth_gp, solid[i][j]);
@@ -88,7 +91,7 @@ void Earth(uint8_t Density) {
   }
 }
 
-void Water(uint8_t Level, uint8_t Waves) {
+void Water(uint8_t Waves, uint8_t Level) {
   static uint8_t liquid[NUM_STRIPS][NUM_LEDS];
   uint8_t i, j;
   int iOffset, jOffset;
@@ -135,7 +138,7 @@ void Fire(uint8_t Sparking, uint8_t Cooling) {
   }
 }
 
-void Air(uint8_t Bubbling) {
+void Air(uint8_t Bubbling, uint8_t Level) {
   static uint8_t gas[NUM_STRIPS][NUM_LEDS];
   uint8_t i, j;
 

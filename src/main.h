@@ -27,13 +27,14 @@
 #define FRAME_DELAY       40
 
 #define WATER_NOISE_SCALE 64
-
+#define EARTH_NOISE_SCALE 64
 #define RAINBOW_STEP       4
 
 CRGB leds[NUM_STRIPS][NUM_LEDS];
 
 DEFINE_GRADIENT_PALETTE( earth_gp ) {
   0,   0,   0,   0,
+127,  31,   0,   0,
 255, 127, 127,   0
 };
 DEFINE_GRADIENT_PALETTE( water_gp ) {
@@ -43,12 +44,6 @@ DEFINE_GRADIENT_PALETTE( water_gp ) {
 223,   0, 223, 127,
 255, 127, 255, 255
 };
-/*DEFINE_GRADIENT_PALETTE( water_gp ) {
-  0,   0,   0,   0,
-  1,   0,   0, 127,
-223,  31,  31, 255,
-255,  63,  63, 255
-};*/
 DEFINE_GRADIENT_PALETTE( fire_gp ) {
   0,   0,   0,   0,
  63, 255,   0,   0,
@@ -65,10 +60,10 @@ static uint16_t x;
 static uint16_t y;
 static uint16_t z;
 
-void Earth(uint8_t Density);
-void Water(uint8_t Level, uint8_t Waves);
+void Earth(uint8_t Density, uint8_t Level);
+void Water(uint8_t Waves, uint8_t Level);
 void Fire(uint8_t Sparking, uint8_t Cooling);
-void Air(uint8_t Bubbling);
+void Air(uint8_t Bubbling, uint8_t Level);
 void Rainbow();
 
 uint8_t ReadPot(uint8_t Channel);
