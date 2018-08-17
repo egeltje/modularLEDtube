@@ -38,7 +38,10 @@ DEFINE_GRADIENT_PALETTE( earth_gp ) {
 };
 DEFINE_GRADIENT_PALETTE( water_gp ) {
   0,   0,   0,   0,
-255,  63,  63, 255
+  1,   0,  63,   0,
+127,   0,  63, 127,
+223,   0, 223, 127,
+255, 127, 255, 255
 };
 /*DEFINE_GRADIENT_PALETTE( water_gp ) {
   0,   0,   0,   0,
