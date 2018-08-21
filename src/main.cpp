@@ -6,7 +6,7 @@
 void setup() {
   // configure serial ports
   Serial.begin(115200);
-  Serial1.begin(115200);
+  Serial1.begin(9600);
 
   // configure lED strips in FastLED array
   FastLED.addLeds<CHIPSET, LED_PIN0, COLOR_ORDER>(leds[0], NUM_LEDS).setCorrection( TypicalLEDStrip );
@@ -33,13 +33,25 @@ void setup() {
 void loop()
 {
   uint8_t State = 0;
-  uint8_t Param1 = ReadPot(POT_EFFECT1);
-  uint8_t Param2 = ReadPot(POT_EFFECT2);
-  uint8_t Param3 = ReadPot(POT_BRIGHTNESS);
+  uint8_t Param1 = 0;
+  uint8_t Param2 = 0;
+  uint8_t Param3 = 0;
   // Add entropy to random number generator; we use a lot of it.
 //  random16_add_entropy(random());
 
   EVERY_N_MILLISECONDS(FRAME_DELAY) {
+    Param1 = ReadPot(POT_EFFECT1);
+    Param2 = ReadPot(POT_EFFECT2);
+    Param3 = ReadPot(POT_BRIGHTNESS);
+
+    Serial.print("Param1: ");
+    Serial.println(Param1);
+    Serial.print("Param2: ");
+    Serial.println(Param2);
+    Serial.print("Param3: ");
+    Serial.println(Param3);
+    Serial.println("----------");
+
     switch (ReadSwitch()) {  // run simulation frame depending on state
       case 0:
         if (State != 0) {
@@ -98,9 +110,12 @@ void Water(uint8_t Waves, uint8_t Level) {
 
   for (i = 0; i < NUM_STRIPS; i++) {
     iOffset = i * WATER_NOISE_SCALE;
-    for (j = 0; j < (NUM_LEDS / (255 / Level)); j++) {
+    for (j = 0; j < (uint8_t)((Level * NUM_LEDS)/ MAX_POT_READING); j++) {
       jOffset = j * WATER_NOISE_SCALE;
       liquid[i][j] = inoise8(x + iOffset, y + jOffset, z);
+    }
+    for (j = (uint8_t)((Level * NUM_LEDS) / MAX_POT_READING) + 1; j < NUM_LEDS; j++) {
+      liquid[i][j] = 0;
     }
     z = z + 1;
     for(j = 0; j < NUM_LEDS; j++) {
@@ -171,11 +186,11 @@ void Rainbow() {
 }
 
 uint8_t ReadPot(uint8_t Channel) {
-  return 127;
-  // return analogRead(Channel);
+  //return 127;
+   return analogRead(Channel);
 }
 
 uint8_t ReadSwitch() {
-  return ((!digitalRead(SWITCH_PIN0) * 1) + (!digitalRead(SWITCH_PIN1) * 2));
-  //return 2;
+  //return ((!digitalRead(SWITCH_PIN0) * 1) + (!digitalRead(SWITCH_PIN1) * 2));
+  return 1;
 }

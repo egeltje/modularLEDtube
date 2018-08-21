@@ -18,6 +18,7 @@
 #define POT_BRIGHTNESS     3 // original channel 3
 #define POT_EFFECT1        4 // original channel 4
 #define POT_EFFECT2        5 // original channel 5
+#define MAX_POT_READING   255
 
 #define COLOR_ORDER        GRB
 #define CHIPSET            WS2812
