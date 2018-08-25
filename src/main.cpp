@@ -25,64 +25,78 @@ void setup() {
   y = random16();
   z = random16();
 
+  Param1 = ReadPot(POT_EFFECT);
+  Param2 = ReadPot(POT_EFFECT_MOD1);
+  Param3 = ReadPot(POT_EFFECT_MOD2);
+  ParamStep = 0;
+
   // configure switches and potentiometers
   pinMode(SWITCH_PIN0, INPUT_PULLUP);
-  pinMode(SWITCH_PIN1, INPUT_PULLUP);
 }
 
 void loop()
 {
-  uint8_t State = 0;
-  uint8_t Param1 = 0;
-  uint8_t Param2 = 0;
-  uint8_t Param3 = 0;
   // Add entropy to random number generator; we use a lot of it.
-//  random16_add_entropy(random());
+  random16_add_entropy(random());
 
   EVERY_N_MILLISECONDS(FRAME_DELAY) {
-    Param1 = ReadPot(POT_EFFECT1);
-    Param2 = ReadPot(POT_EFFECT2);
-    Param3 = ReadPot(POT_BRIGHTNESS);
+    tempParam1 += ReadPot(POT_EFFECT);
+    tempParam2 += ReadPot(POT_EFFECT_MOD1);
+    tempParam3 += ReadPot(POT_EFFECT_MOD2);
+    ParamStep++;
+    if (ParamStep >= POT_READING_AVERAGE) {
+      Param1 = tempParam1 / POT_READING_AVERAGE;
+      Param2 = tempParam2 / POT_READING_AVERAGE;
+      Param3 = tempParam3 / POT_READING_AVERAGE;
+      tempParam1 = 0;
+      tempParam2 = 0;
+      tempParam3 = 0;
+      ParamStep = 0;
 
-    Serial.print("Param1: ");
-    Serial.println(Param1);
-    Serial.print("Param2: ");
-    Serial.println(Param2);
-    Serial.print("Param3: ");
-    Serial.println(Param3);
-    Serial.println("----------");
-
-    switch (ReadSwitch()) {  // run simulation frame depending on state
+      Serial.print("state : ");
+      Serial.println(State);
+      Serial.print("Param1: ");
+      Serial.println(Param1);
+      Serial.print("Param2: ");
+      Serial.println(Param2);
+      Serial.print("Param3: ");
+      Serial.println(Param3);
+      Serial.println("----------");
+    }
+    State = ReadState(Param1);
+    switch (State) {  // run simulation frame depending on state
       case 0:
-        if (State != 0) {
-          State = 0;
-        }
-        Earth(Param1, Param2);
+        Light();
         break;
       case 1:
-        if (State != 1) {
-          State = 1;
-        }
-        Water(Param1, Param2);
-        break;
+          Earth(Param2, Param3);
+          break;
       case 2:
-        if (State != 2) {
-          State = 2;
-        }
-        Fire(Param1, Param2);
+        Water(Param2, Param3);
         break;
       case 3:
-        if (State != 3) {
-          State = 3;
-        }
-        Air(Param1, Param2);
+        Fire(Param2, Param3);
+        break;
+      case 4:
+        Air(Param2, Param3);
         break;
       default:
         Rainbow();
     }
 
-    FastLED.setBrightness(Param3);
+    FastLED.setBrightness(127
+    );
     FastLED.show(); // display this frame
+  }
+}
+
+void Light() {
+  uint8_t i, j;
+
+  for (i = 0; i < NUM_STRIPS; i++) {
+    for (j = 0; j < NUM_LEDS; j++) {
+      leds[i][j] = 0x7f7f7f;
+    }
   }
 }
 
@@ -110,11 +124,11 @@ void Water(uint8_t Waves, uint8_t Level) {
 
   for (i = 0; i < NUM_STRIPS; i++) {
     iOffset = i * WATER_NOISE_SCALE;
-    for (j = 0; j < (uint8_t)((Level * NUM_LEDS)/ MAX_POT_READING); j++) {
+    for (j = 0; j < (uint8_t)((Level * NUM_LEDS) / 255); j++) {
       jOffset = j * WATER_NOISE_SCALE;
       liquid[i][j] = inoise8(x + iOffset, y + jOffset, z);
     }
-    for (j = (uint8_t)((Level * NUM_LEDS) / MAX_POT_READING) + 1; j < NUM_LEDS; j++) {
+    for (j = (uint8_t)((Level * NUM_LEDS) / 255) + 1; j < NUM_LEDS; j++) {
       liquid[i][j] = 0;
     }
     z = z + 1;
@@ -186,11 +200,9 @@ void Rainbow() {
 }
 
 uint8_t ReadPot(uint8_t Channel) {
-  //return 127;
-   return analogRead(Channel);
+  return (uint8_t)((uint16_t)(255 * analogRead(Channel)) / MAX_POT_READING);
 }
 
-uint8_t ReadSwitch() {
-  //return ((!digitalRead(SWITCH_PIN0) * 1) + (!digitalRead(SWITCH_PIN1) * 2));
-  return 1;
+uint8_t ReadState(uint8_t Value) {
+  return (analogRead(POT_EFFECT) / 16);
 }

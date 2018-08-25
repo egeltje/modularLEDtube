@@ -8,17 +8,19 @@
 #define LED_PIN7           5
 
 #define SWITCH_PIN0       22
-#define SWITCH_PIN1       23
 #define AD_CHANNEL3_PIN   17
 #define AD_CHANNEL4_PIN   18
 #define AD_CHANNEL5_PIN   19
+#define AD_CHANNEL9_PIN   23
 #define TX1_PIN            1
 #define RX1_PIN            0
 
-#define POT_BRIGHTNESS     3 // original channel 3
-#define POT_EFFECT1        4 // original channel 4
-#define POT_EFFECT2        5 // original channel 5
-#define MAX_POT_READING   255
+#define POT_EFFECT         3 // original channel 3
+#define POT_EFFECT_MOD1    4 // original channel 4
+#define POT_EFFECT_MOD2    5 // original channel 5
+#define POT_BRIGHTNESS     9 // original channel 3
+#define MAX_POT_READING  105
+#define POT_READING_AVERAGE 3
 
 #define COLOR_ORDER        GRB
 #define CHIPSET            WS2812
@@ -61,6 +63,12 @@ static uint16_t x;
 static uint16_t y;
 static uint16_t z;
 
+uint8_t State;
+uint8_t Param1, Param2, Param3;
+uint16_t tempParam1, tempParam2, tempParam3;
+uint8_t ParamStep;
+
+void Light();
 void Earth(uint8_t Density, uint8_t Level);
 void Water(uint8_t Waves, uint8_t Level);
 void Fire(uint8_t Sparking, uint8_t Cooling);
@@ -68,4 +76,4 @@ void Air(uint8_t Bubbling, uint8_t Level);
 void Rainbow();
 
 uint8_t ReadPot(uint8_t Channel);
-uint8_t ReadSwitch();
+uint8_t ReadState(uint8_t Value);
