@@ -6,7 +6,7 @@
 void setup() {
   // configure serial ports
   Serial.begin(115200);
-  Serial1.begin(9600);
+//  Serial1.begin(9600);
 
   // configure lED strips in FastLED array
   FastLED.addLeds<CHIPSET, LED_PIN0, COLOR_ORDER>(leds[0], NUM_LEDS).setCorrection( TypicalLEDStrip );
@@ -25,13 +25,6 @@ void setup() {
   y = random16();
   z = random16();
 
-  Param1 = ReadPot(POT_EFFECT);
-  Param2 = ReadPot(POT_EFFECT_MOD1);
-  Param3 = ReadPot(POT_EFFECT_MOD2);
-  ParamStep = 0;
-
-  // configure switches and potentiometers
-  pinMode(SWITCH_PIN0, INPUT_PULLUP);
 }
 
 void loop()
@@ -40,53 +33,47 @@ void loop()
   random16_add_entropy(random());
 
   EVERY_N_MILLISECONDS(FRAME_DELAY) {
-    tempParam1 += ReadPot(POT_EFFECT);
-    tempParam2 += ReadPot(POT_EFFECT_MOD1);
-    tempParam3 += ReadPot(POT_EFFECT_MOD2);
-    ParamStep++;
-    if (ParamStep >= POT_READING_AVERAGE) {
-      Param1 = tempParam1 / POT_READING_AVERAGE;
-      Param2 = tempParam2 / POT_READING_AVERAGE;
-      Param3 = tempParam3 / POT_READING_AVERAGE;
-      tempParam1 = 0;
-      tempParam2 = 0;
-      tempParam3 = 0;
-      ParamStep = 0;
-
-      Serial.print("state : ");
-      Serial.println(State);
-      Serial.print("Param1: ");
-      Serial.println(Param1);
-      Serial.print("Param2: ");
-      Serial.println(Param2);
-      Serial.print("Param3: ");
-      Serial.println(Param3);
-      Serial.println("----------");
-    }
+    Param1 = ReadPot(POT_EFFECT);
+    Param2 = ReadPot(POT_EFFECT_MOD1);
+    Param3 = ReadPot(POT_EFFECT_MOD2);
+    Param4 = ReadPot(POT_EFFECT_MOD3);
+/*
+    Serial.print("State : ");
+    Serial.println(State);
+    Serial.print("Param1: ");
+    Serial.println(Param1);
+    Serial.print("Param2: ");
+    Serial.println(Param2);
+    Serial.print("Param3: ");
+    Serial.println(Param3);
+    Serial.print("Param4: ");
+    Serial.println(Param4);
+    Serial.println("----------");
+*/
     State = ReadState(Param1);
     switch (State) {  // run simulation frame depending on state
-      case 0:
+      case 2:
         Light();
         break;
-      case 1:
-          Earth(Param2, Param3);
-          break;
-      case 2:
-        Water(Param2, Param3);
-        break;
       case 3:
-        Fire(Param2, Param3);
-        break;
+          Earth(Param3, Param4);
+          break;
       case 4:
-        Air(Param2, Param3);
+        Water(Param3, Param4);
+        break;
+      case 5:
+        Fire(Param3, Param4);
+        break;
+      case 6:
+        Air(Param3, Param4);
         break;
       default:
         Rainbow();
     }
 
-    FastLED.setBrightness(127
-    );
+    FastLED.setBrightness(Param2);
     FastLED.show(); // display this frame
+
   }
 }
 
@@ -199,10 +186,10 @@ void Rainbow() {
   }
 }
 
-uint8_t ReadPot(uint8_t Channel) {
-  return (uint8_t)((uint16_t)(255 * analogRead(Channel)) / MAX_POT_READING);
+uint16_t ReadPot(uint8_t Channel) {
+  return analogRead(Channel) / 4;
 }
 
 uint8_t ReadState(uint8_t Value) {
-  return (analogRead(POT_EFFECT) / 16);
+  return scale8(Value, 9);
 }
