@@ -159,12 +159,14 @@ void Air(uint8_t Bubbling, uint8_t Level) {
   uint8_t i, j;
 
   for (i = 0; i < NUM_STRIPS; i++) {
-    for(j = 0; j < NUM_LEDS; j++) {
-      gas[i][j + 1] = gas[i][j];
+    // rise all bubbles
+    for(j = 0; j < NUM_LEDS - 1; j++) {
+      gas[i][j + 1] = gas[i][j]; // the j + 1 should be something with gravity
     }
+    // Generate new bubbles at random
     if(random8() < Bubbling) {
-      j = random8(7);
-      gas[i][j] = qadd8(gas[i][j], random8(160,255));
+      gas[i][0] = 0;
+      gas[i][1] = qadd8(gas[i][0], random8(160,255));
     }
     for(j = 0; j < NUM_LEDS; j++) {
       leds[i][j] = ColorFromPalette((CRGBPalette16)air_gp, gas[i][j]);
