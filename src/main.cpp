@@ -93,9 +93,9 @@ void Earth(uint8_t Density, uint8_t Level) {
   int iOffset, jOffset;
 
   for (i = 0; i < NUM_STRIPS; i++) {
-    iOffset = i * EARTH_NOISE_SCALE;
+    iOffset = i * Density;
     for (j = 0; j < (NUM_LEDS / (255 / Level)); j++) {
-      jOffset = j * EARTH_NOISE_SCALE;
+      jOffset = j * Density;
       solid[i][j] = inoise8(x + iOffset, y + jOffset, (Density * 10));
     }
     for(j = 0; j < NUM_LEDS; j++) {
@@ -110,15 +110,15 @@ void Water(uint8_t Waves, uint8_t Level) {
   int iOffset, jOffset;
 
   for (i = 0; i < NUM_STRIPS; i++) {
-    iOffset = i * WATER_NOISE_SCALE;
+    iOffset = i * Waves;
     for (j = 0; j < (uint8_t)((Level * NUM_LEDS) / 255); j++) {
-      jOffset = j * WATER_NOISE_SCALE;
+      jOffset = j * Waves;
       liquid[i][j] = inoise8(x + iOffset, y + jOffset, z);
     }
     for (j = (uint8_t)((Level * NUM_LEDS) / 255) + 1; j < NUM_LEDS; j++) {
       liquid[i][j] = 0;
     }
-    z = z + 1;
+    z++; // move through the Perlin noise
     for(j = 0; j < NUM_LEDS; j++) {
       leds[i][j] = ColorFromPalette((CRGBPalette16)water_gp, liquid[i][j]);
     }
@@ -138,7 +138,7 @@ void Fire(uint8_t Sparking, uint8_t Cooling) {
       heat[i][j] = qsub8(heat[i][j],  random8(0, ((Cooling * 10) / NUM_LEDS) + 2));
     }
     // Step 2.  Heat from each cell drifts 'up' and diffuses a little
-    for(j= NUM_LEDS - 1; j >= 2; j--) {
+    for(j = NUM_LEDS - 1; j >= 2; j--) {
       heat[i][j] = (heat[i][j - 1] + heat[i][j - 2] + heat[i][j - 2] ) / 3;
     }
     // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
@@ -160,13 +160,14 @@ void Air(uint8_t Bubbling, uint8_t Level) {
 
   for (i = 0; i < NUM_STRIPS; i++) {
     // rise all bubbles
-    for(j = 0; j < NUM_LEDS - 1; j++) {
-      gas[i][j + 1] = gas[i][j]; // the j + 1 should be something with gravity
+    for(j = NUM_LEDS - 1; j >= 1; j--) {
+      gas[i][j] = gas[i][j - 1];
     }
     // Generate new bubbles at random
-    if(random8() < Bubbling) {
+    if(random8() < (Bubbling/8)) {
       gas[i][0] = 0;
-      gas[i][1] = qadd8(gas[i][0], random8(160,255));
+      gas[i][1] = 127;
+      gas[i][2] = 255;
     }
     for(j = 0; j < NUM_LEDS; j++) {
       leds[i][j] = ColorFromPalette((CRGBPalette16)air_gp, gas[i][j]);
@@ -176,6 +177,7 @@ void Air(uint8_t Bubbling, uint8_t Level) {
 
 void Rainbow() {
   static uint8_t Gradient;
+  uint8_t i;
 
   if (Gradient < RAINBOW_STEP) {
     Gradient = 255;
@@ -183,8 +185,8 @@ void Rainbow() {
     Gradient -= RAINBOW_STEP;
   }
 
-  for (uint8_t i = 0; i < NUM_STRIPS; i++) {
-    fill_rainbow(leds[i], NUM_LEDS, Gradient, 4);
+  for (i = 0; i < NUM_STRIPS; i++) {
+    fill_rainbow(leds[i], NUM_LEDS, ((i * 20 + Gradient) % 255), 4);
   }
 }
 
