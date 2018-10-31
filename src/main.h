@@ -10,11 +10,11 @@
 #define TX1_PIN            1
 #define RX1_PIN            0
 
-#define POT_EFFECT_MOD1    3 // original channel 3 pin 18
-#define POT_EFFECT_MOD2    4 // original channel 4 pin 19
-#define POT_EFFECT_MOD3    5 // original channel 5 pin 19
-#define POT_EFFECT         8 // original channel 8 Pin 17
-#define POT_SPARE          9 // original channel 9 pin 23
+#define POT_EFFECT_MOD1    3  // original channel 3 pin 18
+#define POT_EFFECT_MOD2    4  // original channel 4 pin 19
+#define POT_EFFECT_MOD3    5  // original channel 5 pin 19
+#define POT_EFFECT         8  // original channel 8 Pin 17
+#define POT_SPARE          9  // original channel 9 pin 23
 
 #define COLOR_ORDER      GRB
 #define CHIPSET       WS2812
@@ -50,11 +50,9 @@ DEFINE_GRADIENT_PALETTE( air_gp ) {
 255, 127, 255, 255
 };
 
-// The 32bit version of our coordinates
 static uint16_t x;
 static uint16_t y;
 static uint16_t z;
-
 uint8_t State;
 uint8_t Param1, Param2, Param3, Param4;
 

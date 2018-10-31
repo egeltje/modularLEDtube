@@ -5,8 +5,8 @@
 
 void setup() {
   // configure serial ports
-  Serial.begin(115200);
-//  Serial1.begin(9600);
+  // Serial.begin(115200);
+  // Serial1.begin(9600);
 
   // configure lED strips in FastLED array
   FastLED.addLeds<CHIPSET, LED_PIN0, COLOR_ORDER>(leds[0], NUM_LEDS).setCorrection( TypicalLEDStrip );
@@ -20,11 +20,10 @@ void setup() {
 
   delay(100); // sanity delay
 
-  // Initialize our coordinates to some random values
+  // Initialize Perlin coordinates to some random values
   x = random16();
   y = random16();
   z = random16();
-
 }
 
 void loop()
@@ -33,31 +32,21 @@ void loop()
   random16_add_entropy(random());
 
   EVERY_N_MILLISECONDS(FRAME_DELAY) {
+    // read potmeters and determine state
     Param1 = ReadPot(POT_EFFECT);
     Param2 = ReadPot(POT_EFFECT_MOD1);
     Param3 = ReadPot(POT_EFFECT_MOD2);
     Param4 = ReadPot(POT_EFFECT_MOD3);
-/*
-    Serial.print("State : ");
-    Serial.println(State);
-    Serial.print("Param1: ");
-    Serial.println(Param1);
-    Serial.print("Param2: ");
-    Serial.println(Param2);
-    Serial.print("Param3: ");
-    Serial.println(Param3);
-    Serial.print("Param4: ");
-    Serial.println(Param4);
-    Serial.println("----------");
-*/
     State = ReadState(Param1);
-    switch (State) {  // run simulation frame depending on state
+
+    // run simulation frame depending on state
+    switch (State) {
       case 2:
         Light();
         break;
       case 3:
-          Earth(Param3, Param4);
-          break;
+        Earth(Param3, Param4);
+        break;
       case 4:
         Water(Param3, Param4);
         break;
@@ -71,18 +60,20 @@ void loop()
         Rainbow();
     }
 
+    // set brigtness and display the calculated frame
     FastLED.setBrightness(Param2);
-    FastLED.show(); // display this frame
-
+    FastLED.show();
   }
 }
 
 void Light() {
+  // set all LEDs to full white
+  // no params, only overall brightness
   uint8_t i, j;
 
   for (i = 0; i < NUM_STRIPS; i++) {
     for (j = 0; j < NUM_LEDS; j++) {
-      leds[i][j] = 0x7f7f7f;
+      leds[i][j] = 0xffffff;
     }
   }
 }
