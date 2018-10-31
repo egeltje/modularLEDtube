@@ -42,18 +42,21 @@ void loop()
     // run simulation frame depending on state
     switch (State) {
       case 2:
-        Light(Param2, Param3, Param4);
+        Light(Param4);
         break;
       case 3:
-        Earth(Param2, Param3, Param4);
+        Color(Param2, Param3, Param4);
         break;
       case 4:
-        Water(Param2, Param3, Param4);
+        Earth(Param2, Param3, Param4);
         break;
       case 5:
-        Fire(Param2, Param3, Param4);
+        Water(Param2, Param3, Param4);
         break;
       case 6:
+        Fire(Param2, Param3, Param4);
+        break;
+      case 7:
         Air(Param2, Param3, Param4);
         break;
       default:
@@ -64,12 +67,22 @@ void loop()
   }
 }
 
-void Light(uint8_t Hue, uint8_t Saturation, uint8_t Value) {
+void Light(uint8_t Brightness) {
   uint8_t i, j;
 
-  // convert hsv to rgb
-  CHSV hsv(Hue, Saturation, Value);
+  for (i = 0; i < NUM_STRIPS; i++) {
+    for (j = 0; j < NUM_LEDS; j++) {
+      leds[i][j] = 0xFFFFFF;
+    }
+  }
+  FastLED.setBrightness(Brightness);
+}
+
+void Color(uint8_t Hue, uint8_t Saturation, uint8_t Value) {
+  uint8_t i, j;
   CRGB rgb;
+  CHSV hsv(Hue, Saturation, Value);
+
   hsv2rgb_spectrum(hsv, rgb);
 
   for (i = 0; i < NUM_STRIPS; i++) {
