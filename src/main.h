@@ -56,12 +56,13 @@ static uint16_t z;
 uint8_t State;
 uint8_t Param1, Param2, Param3, Param4;
 
-void Light(uint8_t Hue, uint8_t Saturation, uint8_t Value);
-void Earth(uint8_t Density, uint8_t Level, uint8_t Brightness);
-void Water(uint8_t Waves, uint8_t Level, uint8_t Brightness);
-void Fire(uint8_t Sparking, uint8_t Cooling, uint8_t Brightness);
-void Air(uint8_t Bubbling, uint8_t Level, uint8_t Brightness);
-void Rainbow(uint8_t Brightness);
+void Light(uint8_t Param2, uint8_t Param3, uint8_t Param4);
+void Color(uint8_t Param2, uint8_t Param3, uint8_t Param4);
+void Earth(uint8_t Param2, uint8_t Param3, uint8_t Param4);
+void Water(uint8_t Param2, uint8_t Param3, uint8_t Param4);
+void Fire(uint8_t Param2, uint8_t Param3, uint8_t Param4);
+void Air(uint8_t Param2, uint8_t Param3, uint8_t Param4);
+void Rainbow(uint8_t Param2, uint8_t Param3, uint8_t Param4);
 
 uint16_t ReadPot(uint8_t Channel);
 uint8_t ReadState(uint8_t Value);
