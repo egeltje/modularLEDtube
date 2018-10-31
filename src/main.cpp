@@ -42,43 +42,44 @@ void loop()
     // run simulation frame depending on state
     switch (State) {
       case 2:
-        Light();
+        Light(Param2, Param3, Param4);
         break;
       case 3:
-        Earth(Param3, Param4);
+        Earth(Param2, Param3, Param4);
         break;
       case 4:
-        Water(Param3, Param4);
+        Water(Param2, Param3, Param4);
         break;
       case 5:
-        Fire(Param3, Param4);
+        Fire(Param2, Param3, Param4);
         break;
       case 6:
-        Air(Param3, Param4);
+        Air(Param2, Param3, Param4);
         break;
       default:
-        Rainbow();
+        Rainbow(Param4);
     }
-
-    // set brigtness and display the calculated frame
-    FastLED.setBrightness(Param2);
+    // display the calculated frame
     FastLED.show();
   }
 }
 
-void Light() {
-  // set all LEDs to full white
-  // no params, only overall brightness
+void Light(uint8_t Hue, uint8_t Saturation, uint8_t Value) {
   uint8_t i, j;
+
+  // convert hsv to rgb
+  CHSV hsv(Hue, Saturation, Value);
+  CRGB rgb;
+  hsv2rgb_spectrum(hsv, rgb);
 
   for (i = 0; i < NUM_STRIPS; i++) {
     for (j = 0; j < NUM_LEDS; j++) {
-      leds[i][j] = 0xffffff;
+      leds[i][j] = rgb;
     }
   }
 }
 
-void Earth(uint8_t Density, uint8_t Level) {
+void Earth(uint8_t Density, uint8_t Level, uint8_t Brightness) {
   static uint8_t solid[NUM_STRIPS][NUM_LEDS];
   uint8_t i, j;
   int iOffset, jOffset;
@@ -93,9 +94,10 @@ void Earth(uint8_t Density, uint8_t Level) {
       leds[i][j] = ColorFromPalette((CRGBPalette16)earth_gp, solid[i][j]);
     }
   }
+  FastLED.setBrightness(Brightness);
 }
 
-void Water(uint8_t Waves, uint8_t Level) {
+void Water(uint8_t Waves, uint8_t Level, uint8_t Brightness) {
   static uint8_t liquid[NUM_STRIPS][NUM_LEDS];
   uint8_t i, j;
   int iOffset, jOffset;
@@ -114,9 +116,10 @@ void Water(uint8_t Waves, uint8_t Level) {
       leds[i][j] = ColorFromPalette((CRGBPalette16)water_gp, liquid[i][j]);
     }
   }
+  FastLED.setBrightness(Brightness);
 }
 
-void Fire(uint8_t Sparking, uint8_t Cooling) {
+void Fire(uint8_t Sparking, uint8_t Cooling, uint8_t Brightness) {
   // Inspired by Fire2012 by Mark Kriegsman, July 2012
   // as part of "Five Elements" shown here: http://youtu.be/knWiGsmgycY
 
@@ -143,9 +146,10 @@ void Fire(uint8_t Sparking, uint8_t Cooling) {
 //      leds[i][j] = ColorFromPalette((CRGBPalette16)fire_gp, heat[i][j]);
     }
   }
+  FastLED.setBrightness(Brightness);
 }
 
-void Air(uint8_t Bubbling, uint8_t Level) {
+void Air(uint8_t Bubbling, uint8_t Level, uint8_t Brightness) {
   static uint8_t gas[NUM_STRIPS][NUM_LEDS];
   uint8_t i, j;
 
@@ -164,9 +168,10 @@ void Air(uint8_t Bubbling, uint8_t Level) {
       leds[i][j] = ColorFromPalette((CRGBPalette16)air_gp, gas[i][j]);
     }
   }
+  FastLED.setBrightness(Brightness);
 }
 
-void Rainbow() {
+void Rainbow(uint8_t Brightness) {
   static uint8_t Gradient;
   uint8_t i;
 
@@ -179,6 +184,7 @@ void Rainbow() {
   for (i = 0; i < NUM_STRIPS; i++) {
     fill_rainbow(leds[i], NUM_LEDS, ((i * 20 + Gradient) % 255), 4);
   }
+  FastLED.setBrightness(Brightness);
 }
 
 uint16_t ReadPot(uint8_t Channel) {

@@ -10,10 +10,10 @@
 #define TX1_PIN            1
 #define RX1_PIN            0
 
-#define POT_EFFECT_MOD1    3  // original channel 3 pin 18
-#define POT_EFFECT_MOD2    4  // original channel 4 pin 19
-#define POT_EFFECT_MOD3    5  // original channel 5 pin 19
-#define POT_EFFECT         8  // original channel 8 Pin 17
+#define POT_EFFECT_MOD3    3  // original channel 5 pin 17
+#define POT_EFFECT_MOD2    4  // original channel 4 pin 18
+#define POT_EFFECT_MOD1    5  // original channel 3 pin 19
+#define POT_EFFECT         8  // original channel 8 Pin 22
 #define POT_SPARE          9  // original channel 9 pin 23
 
 #define COLOR_ORDER      GRB
@@ -56,12 +56,12 @@ static uint16_t z;
 uint8_t State;
 uint8_t Param1, Param2, Param3, Param4;
 
-void Light();
-void Earth(uint8_t Density, uint8_t Level);
-void Water(uint8_t Waves, uint8_t Level);
-void Fire(uint8_t Sparking, uint8_t Cooling);
-void Air(uint8_t Bubbling, uint8_t Level);
-void Rainbow();
+void Light(uint8_t Hue, uint8_t Saturation, uint8_t Value);
+void Earth(uint8_t Density, uint8_t Level, uint8_t Brightness);
+void Water(uint8_t Waves, uint8_t Level, uint8_t Brightness);
+void Fire(uint8_t Sparking, uint8_t Cooling, uint8_t Brightness);
+void Air(uint8_t Bubbling, uint8_t Level, uint8_t Brightness);
+void Rainbow(uint8_t Brightness);
 
 uint16_t ReadPot(uint8_t Channel);
 uint8_t ReadState(uint8_t Value);
