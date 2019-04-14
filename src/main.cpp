@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <FastLED.h>
+#include "FastLED.h"
 #include <stdint.h>
 #include "main.h"
 
